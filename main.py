@@ -33,22 +33,6 @@ def update_csv(new_study_ids, csv_file_path):
         writer.writerows([[study_id] for study_id in new_study_ids])
     print("CSV file updated with new study IDs.")
 
-def main():
-    dcm4chee_url = "http://13.235.102.234:8080"
-    csv_file_path = "Uploaded_dcm4chee.csv"
-    download_path = "./Temp_Downloads"
-    
-    all_studies = fetch_study_ids(dcm4chee_url)
-    uploaded_studies = get_uploaded_study_ids(csv_file_path)
-    new_studies = list(set(all_studies) - set(uploaded_studies))
-    
-    download_and_extract_studies(new_studies, dcm4chee_url, download_path)
-    update_csv(list(set(uploaded_studies).union(new_studies)), csv_file_path)
-
-if __name__ == "__main__":
-    main()
-
-
 
 
 
@@ -163,4 +147,42 @@ def pacs_to_pacs_transfer():
                 print(f"Failed to upload study {study} to destination Orthanc: {upload_response.status_code}")
             else:
                 print(f"Study {study} transferred successfully.")
- 
+
+import os
+
+def delete_temp_files():
+    directory_path = "./Temp_Downloads"
+
+    for root, dirs, files in os.walk(directory_path, topdown=False):
+        for name in files:
+            file_path = os.path.join(root, name)
+            try:
+                os.remove(file_path)
+            except OSError as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
+        
+        for name in dirs:
+            dir_path = os.path.join(root, name)
+            try:
+                os.rmdir(dir_path)
+            except OSError as e:
+                print(f"Failed to delete {dir_path}. Reason: {e}")
+
+def main():
+    dcm4chee_url = "http://13.235.102.234:8080"
+    csv_file_path = "Uploaded_dcm4chee.csv"
+    download_path = "./Temp_Downloads"
+    
+    all_studies = fetch_study_ids(dcm4chee_url)
+    uploaded_studies = get_uploaded_study_ids(csv_file_path)
+    new_studies = list(set(all_studies) - set(uploaded_studies))
+    if new_studies:
+        return
+    
+    download_and_extract_studies(new_studies, dcm4chee_url, download_path)
+    update_csv(list(set(uploaded_studies).union(new_studies)), csv_file_path)
+    
+
+if __name__ == "__main__":
+    main()
+
