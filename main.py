@@ -33,9 +33,6 @@ def update_csv(new_study_ids, csv_file_path):
         writer.writerows([[study_id] for study_id in new_study_ids])
     print("CSV file updated with new study IDs.")
 
-
-
-
 def list_dicom_files(directory):
     dicom_files = []
     
@@ -47,18 +44,14 @@ def list_dicom_files(directory):
                 file_path = file_path.replace('\\', '/')
                 dicom_files.append(file_path)
     
-    return dicom_paths_arr
-
-
-
-
+    return dicom_files
 
 # Uploading begins here
 
 def upload_dicom_file(dicom_paths_arr):
     orthanc_url = "http://localhost:8042"
 
-    for dicom_file_path in dicom_file_paths:
+    for dicom_file_path in dicom_paths_arr:
         # Read the DICOM file in binary mode
         with open(dicom_file_path, 'rb') as f:
             dicom_data = f.read()
@@ -66,7 +59,8 @@ def upload_dicom_file(dicom_paths_arr):
         # Upload the DICOM file
         orthanc_url_with_instances = orthanc_url.rstrip('/') + '/instances'
         response = requests.post(orthanc_url_with_instances, data=dicom_data, headers={'Content-Type': 'application/dicom'})
-    
+        response.raise_for_status()
+
     # Anonymization begins here
 
     # Creating a list containing New Uploaded Studies
@@ -79,26 +73,25 @@ def upload_dicom_file(dicom_paths_arr):
             for row in csv_reader:
                 uploaded_list.append(row['Uploaded'])
     
-    new_studies_list = requests.get(f"{ORTHANC_URL}/studies").json()
+    new_studies_list = requests.get(f"{orthanc_url}/studies").json()
     new_studies = list(set(new_studies_list) - set(uploaded_list))
     
     anonymize_response = requests.post(
-    f"{orthanc_url}/tools/bulk-anonymize",
-    json={"Resources": [new_studies]}
+        f"{orthanc_url}/tools/bulk-anonymize",
+        json={"Resources": new_studies}
     )
+    anonymize_response.raise_for_status()
 
-    # Delete orignal studies from Orthanc PACS
+    # Delete original studies from Orthanc PACS
     for study_id in new_studies:
-        study_delete_url = f'{ORTHANC_URL}/studies/{study_id}'
+        study_delete_url = f'{orthanc_url}/studies/{study_id}'
         delete_response = requests.delete(study_delete_url)
         delete_response.raise_for_status()
 
-    all_studies = requests.get(f"{ORTHANC_URL}/studies").json()
+    all_studies = requests.get(f"{orthanc_url}/studies").json()
     new_studies = list(set(all_studies) - set(uploaded_list))
 
-
     # Updating the CSV file
-
     fieldnames = ['Uploaded']
     data = []
     concatenated_string = ''.join(new_studies)
@@ -115,20 +108,19 @@ def upload_dicom_file(dicom_paths_arr):
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(data)
-        
 
-def pacs_to_pacs_transfer():
+def pacs_to_pacs_transfer(source_url, destination_url):
     # Get the list of studies from the source Orthanc
     response = requests.get(f"{source_url}/studies")
     if response.status_code != 200:
         print(f"Failed to get studies from source Orthanc: {response.status_code}")
         return
- 
+
     studies = response.json()
- 
+
     for study in studies:
         print(f"Sending study: {study}")
- 
+
         # Download the study as a ZIP file and stream it directly to the destination
         archive_url = f"{source_url}/studies/{study}/archive"
         with requests.get(archive_url, stream=True) as r:
@@ -140,15 +132,13 @@ def pacs_to_pacs_transfer():
             upload_response = requests.post(
                 f"{destination_url}/instances",
                 headers={"Content-Type": "application/zip"},
-                data=r.iter_content(chunk_size=8192) # 8192 bytes (8 kb)
+                data=r.iter_content(chunk_size=8192)  # 8192 bytes (8 kb)
                 # if memory is the constraint, reduce this number 
             )
             if upload_response.status_code != 200:
                 print(f"Failed to upload study {study} to destination Orthanc: {upload_response.status_code}")
             else:
                 print(f"Study {study} transferred successfully.")
-
-import os
 
 def delete_temp_files():
     directory_path = "./Temp_Downloads"
@@ -172,16 +162,25 @@ def main():
     dcm4chee_url = "http://13.235.102.234:8080"
     csv_file_path = "Uploaded_dcm4chee.csv"
     download_path = "./Temp_Downloads"
+    source_url = "http://localhost:8042"
+    destination_url="http://localhost:1111"
     
     all_studies = fetch_study_ids(dcm4chee_url)
     uploaded_studies = get_uploaded_study_ids(csv_file_path)
     new_studies = list(set(all_studies) - set(uploaded_studies))
-    if new_studies:
+    if not new_studies:
+        print("No new studies to download.")
         return
+
     download_and_extract_studies(new_studies, dcm4chee_url, download_path)
     update_csv(list(set(uploaded_studies).union(new_studies)), csv_file_path)
+
+    dicom_paths = list_dicom_files(download_path)
+    upload_dicom_file(dicom_paths)
+    delete_temp_files()
+    pacs_to_pacs_transfer(source_url, destination_url)
 
 
 if __name__ == "__main__":
     main()
-
+ 
