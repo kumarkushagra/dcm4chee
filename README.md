@@ -14,8 +14,7 @@ The `main.py` script:
 
 ### Deployment
 
-Adjust the cron job schedule for `python main.py` to run during periods of minimal dcm4chee activity to avoid upload errors.
-
+Modify the path of `main.py` and timing of the cron job for `python main.py` to run when dcm4chee is least active to prevent upload errors. (Cron job has not been tested)
 
 ---
 ## Requirements
