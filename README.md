@@ -14,7 +14,8 @@ The `main.py` script:
 
 ### Deployment
 
-Modify `cronjob file` such that the path for `python {ACTUAL PATH OF}/main.py` is correct and modify timings if reqquired (timings have been set to -3AM -everyday).(Cron job has not been tested)
+Modify `cronjob file` such that the path for `python {ACTUAL PATH OF}/main.py` is correct and modify timings if reqquired (timings have been set to -3AM -everyday).
+(Cron job has not been tested)
 
 ---
 ## Requirements
