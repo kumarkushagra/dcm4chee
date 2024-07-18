@@ -39,6 +39,7 @@ To run this code, ensure the following prerequisites are met:
    Execute the script either manually or through the Cron job:
    ```
    python main.py
+   (i dont remember the execution command for cron job)
    ```
 
 ## Workflow
