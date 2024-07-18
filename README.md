@@ -13,6 +13,8 @@ The `main.py` script:
 - Anonymizes and sends new studies to the destination PACS.
 
 ### Deployment
+Modify the initial paraters in `main.py "main" function` such that Orthanc Pacs can be accessed 
+(for password protected PACS (orthanc): `https://@<id>:@<password>/--rest of the URL--` (if this dosnt work, remove `@`)
 
 Modify `cronjob file` such that the path for `python {ACTUAL PATH OF}/main.py` is correct and modify timings if reqquired (timings have been set to -3AM -everyday).
 (Cron job has not been tested)
