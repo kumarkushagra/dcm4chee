@@ -20,6 +20,5 @@ def delete_temp_files():
     print("Temporary files deleted.")
 
 
-
 if __name__=="__main__":
     delete_temp_files()

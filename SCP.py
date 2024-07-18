@@ -1,6 +1,5 @@
 import requests
 
-
 # Modify code to compare what all studies have been sent (store this data in a csv)
 def pacs_to_pacs_transfer(source_url, destination_url):
 

@@ -47,6 +47,7 @@ def list_zip_files():
     return zip_files
 
 
+
 if __name__ == '__main__':
     dcm4chee_url = "http://13.235.102.234:8080"
     csv_file_path = "Uploaded_dcm4chee.csv"
