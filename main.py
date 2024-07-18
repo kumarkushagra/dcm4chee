@@ -178,10 +178,9 @@ def main():
     new_studies = list(set(all_studies) - set(uploaded_studies))
     if new_studies:
         return
-    
     download_and_extract_studies(new_studies, dcm4chee_url, download_path)
     update_csv(list(set(uploaded_studies).union(new_studies)), csv_file_path)
-    
+
 
 if __name__ == "__main__":
     main()
