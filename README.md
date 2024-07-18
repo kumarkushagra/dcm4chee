@@ -13,7 +13,10 @@ The `main.py` script:
 - Anonymizes and sends new studies to the destination PACS.
 
 ### Deployment
+
 Adjust the cron job schedule for `python main.py` to run during periods of minimal dcm4chee activity to avoid upload errors.
+
+
 ---
 ## Requirements
 To run this code, ensure the following prerequisites are met:
