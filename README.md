@@ -14,7 +14,7 @@ The `main.py` script:
 
 ### Deployment
 
-Modify the path of `main.py` in the cronjob file and timing of the cron job for `python {ACTUAL PATH OF}/main.py` to run when dcm4chee is least active to prevent upload errors. (Cron job has not been tested)
+Modify `cronjob file` such that the path for `python {ACTUAL PATH OF}/main.py` is correct and modify timings if reqquired (timings have been set to -3AM -everyday).(Cron job has not been tested)
 
 ---
 ## Requirements
@@ -27,8 +27,8 @@ To run this code, ensure the following prerequisites are met:
 ## Usage
 1. **Clone the repository:**
    ```
-   git clone <repository-url>
-   cd <repository-name>
+   git clone https://github.com/kumarkushagra/dcm4chee.git
+   cd <path where you want to clone this repo>
    ```
    
 2. **Modify Configuration:**
