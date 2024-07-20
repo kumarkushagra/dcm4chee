@@ -58,5 +58,3 @@ To run this code, ensure the following prerequisites are met:
 ## Notes
 - This project aims to keep the use of external libraries to a minimum, with `requests` being the only dependency.
 - Ensure proper configuration and access permissions are set up on both dcm4chee and Orthanc PACS for smooth operation.
-
----
