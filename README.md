@@ -1,24 +1,37 @@
 # dcm4chee to Orthanc Study Transfer
 
-## Overview
-This repository contains Python code to transfer anonymized medical studies from dcm4chee to Orthanc PACS. The process involves downloading studies from dcm4chee, pushing them to Orthanc PACS, anonymizing them, and then transferring the anonymized studies to another destination Orthanc PACS.
-`main.py` will check if any new studies have been uploaded on dcm4chee, if yes then anonymize it and send to destination PACS
-Create a cron job that runs `python main.py` at regular intervals (hopefully when dcm4chee has minimal activity so that no errors are encountered during uploading process)
+### Overview
+This repository features Python code for transferring anonymized medical studies from dcm4chee to Orthanc PACS. The process involves:
+- Downloading studies from dcm4chee
+- Pushing them to Orthanc PACS
+- Anonymizing the data
+- Transferring anonymized studies to another Orthanc PACS instance.
 
+### Functionality
+The `main.py` script:
+- Monitors dcm4chee for new study uploads
+- Anonymizes and sends new studies to the destination PACS.
+
+### Deployment
+Modify the initial paraters in `main.py "main" function` such that Orthanc Pacs can be accessed 
+(for password protected PACS (orthanc): `https://@<id>:@<password>/--rest of the URL--` (if this dosnt work, remove `@`)
+
+Modify `cronjob file` such that the path for `python {ACTUAL PATH OF}/main.py` is correct and modify timings if reqquired (timings have been set to -3AM -everyday).
+(Cron job has not been tested)
+
+---
 ## Requirements
 To run this code, ensure the following prerequisites are met:
 1. Python is installed on your system.
 2. An Orthanc PACS is set up and accessible.
 3. The `requests` library is installed in your Python environment.
-4. A Cron job is set up to execute `python main.py` at specified intervals.
-
-(cron job has not been created yet)
+4. A Cron job is set up to execute `python main.py` at 3AM everyday.
 
 ## Usage
 1. **Clone the repository:**
    ```
-   git clone <repository-url>
-   cd <repository-name>
+   git clone https://github.com/kumarkushagra/dcm4chee.git
+   cd <path where you want to clone this repo>
    ```
    
 2. **Modify Configuration:**
@@ -28,6 +41,7 @@ To run this code, ensure the following prerequisites are met:
    Execute the script either manually or through the Cron job:
    ```
    python main.py
+   (i dont remember the execution command for cron job)
    ```
 
 ## Workflow
@@ -44,5 +58,3 @@ To run this code, ensure the following prerequisites are met:
 ## Notes
 - This project aims to keep the use of external libraries to a minimum, with `requests` being the only dependency.
 - Ensure proper configuration and access permissions are set up on both dcm4chee and Orthanc PACS for smooth operation.
-
----
