@@ -50,12 +50,13 @@ def list_zip_files():
 
 if __name__ == '__main__':
     dcm4chee_url = "http://13.235.102.234:8080"
-    csv_file_path = "Uploaded_dcm4chee.csv"
+    csv_file_path = "Logs/Uploaded_dcm4chee.csv"
     download_path = "./Temp_Downloads"
     
     all_studies = fetch_study_ids(dcm4chee_url)
     uploaded_studies = get_uploaded_study_ids(csv_file_path)
     new_studies = list(set(all_studies) - set(uploaded_studies))
+    print(f"{new_studies}")
     if not new_studies:
         print("No new studies to download.")
         #return
