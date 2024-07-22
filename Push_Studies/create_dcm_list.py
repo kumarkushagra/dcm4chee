@@ -1,6 +1,6 @@
 import os
 
-def find_dicom_files(directory):
+def list_dcm_files(directory):
     dicom_files = []
     
     # Walk through the directory tree
@@ -22,7 +22,7 @@ def find_dicom_files(directory):
 
 if __name__=="__main__":
     directory_path = r"C:/Users/Admin/Desktop/DICOM/"
-    dicom_files_list = find_dicom_files(directory_path)
+    dicom_files_list = list_dcm_files(directory_path)
 
     for file_path in dicom_files_list:
         print(file_path)
