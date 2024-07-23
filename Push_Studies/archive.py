@@ -2,12 +2,34 @@ import shutil
 import zipfile
 import os
 
+
+# def zip_dir(dir_path):
+#     if not os.path.isdir(dir_path):
+#         raise FileNotFoundError(f"Directory not found: {dir_path}")
+#     zip_path = dir_path
+#     shutil.make_archive(zip_path, 'zip', dir_path)
+#     shutil.rmtree(dir_path)
+#     os.rename(f'{zip_path}.zip', f'{zip_path}.zip')
+
+
 def zip_dir(dir_path):
     if not os.path.isdir(dir_path):
         raise FileNotFoundError(f"Directory not found: {dir_path}")
+
+    # Delete non-DICOM files
+    for root, dirs, files in os.walk(dir_path):
+        for file in files:
+            if not file.endswith('.dcm'):
+                os.remove(os.path.join(root, file))
+    
+    # Create zip archive
     zip_path = dir_path
     shutil.make_archive(zip_path, 'zip', dir_path)
+    
+    # Remove original directory
     shutil.rmtree(dir_path)
+    
+    # Rename the zip file (this line is not necessary as the name remains the same)
     os.rename(f'{zip_path}.zip', f'{zip_path}.zip')
 
 def unzip_zip_file(zip_path):
@@ -31,4 +53,4 @@ def unzip_directory(directory_path):
             unzip_zip_file(zip_path)
 
 if __name__=="__main__":
-    print(unzip_zip_file(r"D:\PROJECT\dcm4chee\Temp_Downloads\1.2.276.0.7230010.3.1.2.1381411976.1178.1721028319.745316.zip"))
+    zip_dcm_files(r"C:\Users\Admin\Desktop\dicom data")

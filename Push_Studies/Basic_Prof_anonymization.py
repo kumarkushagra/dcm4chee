@@ -14,10 +14,10 @@ def anonymize_dicom(dicom_file_path,counter):
                 ds[tag].value = ''  # Replace with a dummy date
             elif 'X' in attributes[0]:
                 del ds[tag]  # Delete the tag                
-            elif 'U' in attributes:
-                ds[tag].value = 'REMOVED'  # Replace with a dummy UID
-            elif 'A' in attributes:
-                ds[tag].value = f'Anonymized{_counter}'
+            # elif 'U' in attributes:
+            #     ds[tag].value = 'REMOVED'  # Replace with a dummy UID
+            # elif 'A' in attributes:
+            #     ds[tag].value = f'Anonymized{_counter}'
 
 
     ds.save_as(dicom_file_path)
