@@ -27,7 +27,8 @@ def upload_zip_file(zip_paths_arr,csv_file_path):
     print(f"Anonymizing {len(new_studies)} new studies...")
     anonymize_response = requests.post(
         f"{orthanc_url}/tools/bulk-anonymize",
-        json={"Resources": new_studies}
+        json={"Resources": new_studies,
+        'Keep' : [ 'SOPInstanceUID' ]}
     )
     anonymize_response.raise_for_status()
 
