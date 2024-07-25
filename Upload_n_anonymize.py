@@ -31,8 +31,7 @@ def upload_zip_file(zip_paths_arr,csv_file_path):
         'Keep' : [ 'SOPInstanceUID' ]}
     )
     anonymize_response.raise_for_status()
-
-
+    
     # Delete original studies from Orthanc PACS
     for study_id in new_studies:
         study_delete_url = f'{orthanc_url}/studies/{study_id}'
